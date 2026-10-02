@@ -44,30 +44,39 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // Serve static dist files if available
-  const distDir = resolve('./dist/client');
-  let filePath = join(distDir, url.pathname === '/' ? 'index.html' : url.pathname);
+  // Serve static files from dist/client or .vercel/output/static
+  const possibleDirs = [resolve('./dist/client'), resolve('./.vercel/output/static')];
+  let targetDir = possibleDirs.find(d => existsSync(d)) || possibleDirs[0];
+  
+  let relPath = url.pathname === '/' ? 'index.html' : url.pathname;
+  let filePath = join(targetDir, relPath);
 
   if (existsSync(filePath) && !filePath.endsWith('/')) {
-    const ext = filePath.split('.').pop();
+    const ext = filePath.split('.').pop() || '';
     const mimeTypes = {
-      html: 'text/html',
-      js: 'application/javascript',
-      css: 'text/css',
-      json: 'application/json',
+      html: 'text/html; charset=utf-8',
+      js: 'application/javascript; charset=utf-8',
+      mjs: 'application/javascript; charset=utf-8',
+      css: 'text/css; charset=utf-8',
+      json: 'application/json; charset=utf-8',
       png: 'image/png',
       jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
       svg: 'image/svg+xml',
+      ico: 'image/x-icon',
+      wasm: 'application/wasm',
+      data: 'application/octet-stream',
+      txt: 'text/plain; charset=utf-8',
     };
-    res.writeHead(200, { 'Content-Type': mimeTypes[ext || 'html'] || 'text/plain' });
+    res.writeHead(200, { 'Content-Type': mimeTypes[ext.toLowerCase()] || 'application/octet-stream' });
     res.end(readFileSync(filePath));
     return;
   }
 
-  // Fallback to index.html for SPA routing
-  const indexPath = join(distDir, 'index.html');
+  // Fallback to index.html for root route and SPA client-side routing
+  const indexPath = join(targetDir, 'index.html');
   if (existsSync(indexPath)) {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(readFileSync(indexPath));
     return;
   }
