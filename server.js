@@ -45,13 +45,13 @@ const server = createServer(async (req, res) => {
   }
 
   // Serve static files from dist/client or .vercel/output/static
-  const possibleDirs = [resolve('./dist/client'), resolve('./.vercel/output/static')];
+  const possibleDirs = [resolve('./dist/client'), resolve('./.vercel/output/static'), resolve('./dist')];
   let targetDir = possibleDirs.find(d => existsSync(d)) || possibleDirs[0];
   
   let relPath = url.pathname === '/' ? 'index.html' : url.pathname;
   let filePath = join(targetDir, relPath);
 
-  if (existsSync(filePath) && !filePath.endsWith('/')) {
+  if (existsSync(filePath) && !filePath.endsWith('/') && !filePath.endsWith('index.html')) {
     const ext = filePath.split('.').pop() || '';
     const mimeTypes = {
       html: 'text/html; charset=utf-8',
