@@ -6,7 +6,7 @@
  */
 
 import { createServer } from 'node:http';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const PORT = process.env.PORT || 8080;
@@ -51,26 +51,29 @@ const server = createServer(async (req, res) => {
   let relPath = url.pathname === '/' ? 'index.html' : url.pathname;
   let filePath = join(targetDir, relPath);
 
-  if (existsSync(filePath) && !filePath.endsWith('/') && !filePath.endsWith('index.html')) {
-    const ext = filePath.split('.').pop() || '';
-    const mimeTypes = {
-      html: 'text/html; charset=utf-8',
-      js: 'application/javascript; charset=utf-8',
-      mjs: 'application/javascript; charset=utf-8',
-      css: 'text/css; charset=utf-8',
-      json: 'application/json; charset=utf-8',
-      png: 'image/png',
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      svg: 'image/svg+xml',
-      ico: 'image/x-icon',
-      wasm: 'application/wasm',
-      data: 'application/octet-stream',
-      txt: 'text/plain; charset=utf-8',
-    };
-    res.writeHead(200, { 'Content-Type': mimeTypes[ext.toLowerCase()] || 'application/octet-stream' });
-    res.end(readFileSync(filePath));
-    return;
+  if (existsSync(filePath) && !filePath.endsWith('/')) {
+    const stat = statSync(filePath);
+    if (stat.isFile()) {
+      const ext = filePath.split('.').pop() || '';
+      const mimeTypes = {
+        html: 'text/html; charset=utf-8',
+        js: 'application/javascript; charset=utf-8',
+        mjs: 'application/javascript; charset=utf-8',
+        css: 'text/css; charset=utf-8',
+        json: 'application/json; charset=utf-8',
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        svg: 'image/svg+xml',
+        ico: 'image/x-icon',
+        wasm: 'application/wasm',
+        data: 'application/octet-stream',
+        txt: 'text/plain; charset=utf-8',
+      };
+      res.writeHead(200, { 'Content-Type': mimeTypes[ext.toLowerCase()] || 'application/octet-stream' });
+      res.end(readFileSync(filePath));
+      return;
+    }
   }
 
   // Fallback to index.html for root route and SPA client-side routing
