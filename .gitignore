@@ -1,0 +1,15 @@
+.env
+.env.local
+.env.*.local
+mobile/.env
+mobile/.env.local
+mobile/.env.*.local
+*.jks
+*.keystore
+keystore.properties
+android/app/release/
+android/app/build/
+ios/App/Pods/
+*.ipa
+*.dSYM.zip
+.DS_Store

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nyx_postgres
+    environment:
+      POSTGRES_DB: nyx_production
+      POSTGRES_USER: nyx_user
+      POSTGRES_PASSWORD: secure_password_change_me
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nyx_user -d nyx_production"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nyx:
+    build: .
+    container_name: nyx_app
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      HOST: 0.0.0.0
+      DATABASE_URL: postgres://nyx_user:secure_password_change_me@postgres:5432/nyx_production
+      PUBLIC_URL: https://nyx.yourdomain.com
+      BETTER_AUTH_SECRET: generate_random_secret_here
+      BETTER_AUTH_URL: https://nyx.yourdomain.com
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - nyx_uploads:/app/uploads
+      - nyx_storage:/app/storage
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  nyx_uploads:
+  nyx_storage:
