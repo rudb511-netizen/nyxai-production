@@ -50,7 +50,7 @@ const server = createServer(async (req, res) => {
 
   if (existsSync(filePath) && !filePath.endsWith('/')) {
     const ext = filePath.split('.').pop();
-    const mimeTypes: Record<string, string> = {
+    const mimeTypes = {
       html: 'text/html',
       js: 'application/javascript',
       css: 'text/css',
