@@ -80,3 +80,5 @@ server.listen(Number(PORT), HOST, () => {
   console.log(`[NYX Self-Hosted Server] Running on http://${HOST}:${PORT}`);
   console.log('[NYX Self-Hosted Server] Ready for production traffic.');
 });
+
+export default server;
