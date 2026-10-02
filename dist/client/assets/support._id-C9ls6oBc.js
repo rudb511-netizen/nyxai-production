@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-0vZSBttN.js";import{t}from"./useNavigate-a8B_s7pr.js";import{r as n}from"./index-C8lFvAIm.js";var r=e();function i(){let{id:e}=n.useParams();return(0,r.jsx)(t,{to:`/inbox/$id`,params:{id:e},replace:!0})}export{i as component};

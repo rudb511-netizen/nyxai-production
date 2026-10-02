@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-0vZSBttN.js";import{t}from"./useNavigate-a8B_s7pr.js";var n=e(),r=function(){return(0,n.jsx)(t,{to:`/plus`,replace:!0})};export{r as component};

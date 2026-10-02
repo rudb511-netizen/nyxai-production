@@ -1,0 +1,1 @@
+function e(e){return e===`moderator`||e===`admin`||e===`super_admin`}function t(t,n,r){return e(t)||!!r||n===`org`||n===`founder`||n===`developer`||n===`arc`}function n(t,n,r){return!!t&&(t===n||e(r))}function r(t){return t.viewerId?t.viewerId===t.commentAuthorId||t.postAuthorId&&t.viewerId===t.postAuthorId?!0:e(t.role):!1}export{r as n,n as r,t};
